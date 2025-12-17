@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import {act} from "react-dom/test-utils";
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -16,8 +16,29 @@ Object.defineProperty(window, "matchMedia", {
   }))
 });
 
+// Require after stubbing globals used during render.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const App = require("./App").default;
+
+beforeAll(() => {
+  jest.useFakeTimers();
+});
+
+afterAll(() => {
+  jest.useRealTimers();
+});
+
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+  act(() => {
+    ReactDOM.render(<App />, div);
+  });
+
+  act(() => {
+    jest.runOnlyPendingTimers();
+  });
+
+  act(() => {
+    ReactDOM.unmountComponentAtNode(div);
+  });
 });
