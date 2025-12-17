@@ -1,5 +1,7 @@
 import "jest-canvas-mock";
 
+/* global jest */
+
 // Jest (jsdom) doesn't always expose TextEncoder/TextDecoder even when Node does.
 // Some transitive deps (e.g. undici via cheerio/enzyme) require these globals.
 import {TextDecoder, TextEncoder} from "util";
